@@ -12,11 +12,12 @@ class Conspiracion{
 	}
 	
 	method traidores(){
-		integrantes.filter({personaje=>personaje.aliados().contains(objetivo)})
+		objetivo.traicion(integrantes)
+		
 	}
 	
 	method objetivoCumplido(){
-		return objetivo.estaVivo().negate()|| objetivo.esPeligroso().negate()
+		return !objetivo.estaVivo()|| !objetivo.esPeligroso()
 	}
 	
 		method ejecutarAtaques(){

@@ -8,39 +8,47 @@ constructor(unO,unosI){
 	oro=unO
 	integrantes=unosI}
 	
-method esRica(){
-return oro>1000
-}
+	method esRica(){
+		return oro>1000
+	}
 
-method patrimonio(personaje){
-return oro/integrantes	
-}
+	method patrimonio(personaje){
+		return oro/integrantes	
+	}
 
-method integrantes(){
-	return integrantes
-}
+	method integrantes(){
+		return integrantes
+	}
 
-method gastar(porcentaje){
+	method gastar(porcentaje){
 	oro -= oro*porcentaje/100
+	}
+	
+	method puedenCasarse(persona1,persona2){
+		return persona1.condicionMatrimonio(persona2)&&persona2.puedeCasarse(persona1)
+	}
+	
 }
-}
 
 
-class Stark inherits Casa{
+object stark inherits Casa{
 
+	method esStark(pretendiente){
+		return integrantes.contains(pretendiente)
+	}
 	
 	method condicionMatrimonio(persona,pretendiente){ 
-	return persona.casa() != pretendiente.casa()
+		return self.esStark(pretendiente)
 }}
 
-class Lannister inherits Casa{
+object lannister inherits Casa{
 	
 	method condicionMatrimonio(persona,pretendiente){
-		return persona.conyugues().isEmpty()
+		return persona.esSoltero()
 	}
 }
 
-class Noche inherits Casa{
+object noche inherits Casa{
 	method condicionMatrimonio(persona,pretendiente){
 		return false
 	}

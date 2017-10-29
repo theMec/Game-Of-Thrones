@@ -12,13 +12,16 @@ class Dragon inherits Mascota{
 }
 
 class Lobo inherits Mascota{
+	var deRaza
+	constructor(raza){deRaza=raza}
+	
 	method esPeligroso(){
-	return false
+		return self.esHungaro()
+		}
+	
+	method esHungaro(){
+		return deRaza
 	}
 }
 
-class LoboHuargo inherits Lobo{
-	override method esPeligroso(){
-	return true
-	}
-	}
+

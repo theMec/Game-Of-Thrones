@@ -1,5 +1,6 @@
 import casa.*
 import conspiraciones.*
+import mascotas.*
 
 class Personaje {
 var casa
@@ -18,77 +19,112 @@ compania=unosC
 personalidad=unaP
 }
 
-method estaVivo(){
-	return condVida
-}
+	method estaVivo(){
+		return condVida
+	}
 
-method morir(){
-	condVida = false
-}
+	method morir(){
+		condVida = false
+	}
 
-method aliados(){
-return (compania+conyuges+(casa.integrantes()))	
-}
+	method esSoltero(){
+		return self.conyuges().isEmpty()
+	}
 
-method estaSolo(){
-	return compania.isEmpty()
-}
+	method aliados(){
+		return (compania+conyuges+(casa.integrantes()))	
+	}
 
-method dinero(){
-	return casa.patrimonio()
-}
+	method estaSolo(){
+		return compania.isEmpty()
+	}
 
-method casarse(pretendiente){
-	if(casa.condicionMatrimonio(self,pretendiente)){
-		self.conyuges().add(pretendiente)
-		pretendiente.conyuges().add(self)
-	}else{
-		error.trhowWithMenssage("la casa no permite casamiento")
-	}}
+	method patrimonio(){
+		return casa.patrimonio()
+	}
+
+	method casarse(pretendiente){
+		if(casa.puedenCasarse(self,pretendiente)){
+			self.conyuges().add(pretendiente)
+			pretendiente.conyuges().add(self)
+		}else{
+			error.trhowWithMenssage("la casa no permite casamiento")
+		}
+	}
 	
-method casa(){
-	return casa
+	method derrochar(){
+		casa.gastar(15)
+	}
+	
+	method esRica(){
+		return casa.esRica()
+	}
+	
+	method puedoCasarme(pretendiente){
+		return casa.condicionMatrimonio(self,pretendiente)
+	}
+	
+	method casa(){
+		return casa
+	}
+
+	method conyuges(){
+		return conyuges
+	}
+	
+	method traicion(integrantes){
+		self.aliados().filter({personaje=>self.aliados().contains(personaje)})
+	}
+
+	method esPeligroso(){
+		return self.aliadosPoderosos()||self.matrimonioRico()||self.amigoPeligroso()    
+	}
+
+	method aliadosPoderosos(){
+		return self.aliados().sum({personaje=>personaje.dinero()})>=1000
+	}
+	
+	method matrimonioRico(){
+		return conyuges.all({conyuge => conyuge.esRica()})
+	}
+	
+	method amigoPeligroso(){
+		return self.aliados().any({personaje=>personaje.esPeligroso()})
+	}
 }
 
-method conyuges(){
-	return conyuges
-}
 
-method esPeligroso(){
-	return (self.aliados().map({personaje=>personaje.dinero()})>=1000)||(conyuges.all({conyuge => conyuge.casa().esRica()}))||(self.aliados().any({personaje=>personaje.esPeligroso()}))         
-}//  me falta delegar <<
-
-
-}
 
 
 //personalidad
 
 object sutil{}// problema con personaje pobre
 
-object asesino{
-method atacar(persona){
-persona.morir()
-}
-}
 
-object asesinoPrecavido{
-method atacar(persona){
-if(persona.estaSolo()){
-persona.morir()
-}
-}
+class Asesino{
+	method atacar(persona){
+		persona.morir()
+	}
 }
 
 
-object disipado{
-method atacar(persona){
-persona.casa().gastar(15)
-}
+class AsesinoPrecavido inherits Asesino{
+	override method atacar(persona){
+		if(persona.estaSolo()){
+		super (persona)
+		}
+	}
 }
 
 
-object miedoso{
+class Disipado{
+	method atacar(persona){
+		persona.derrochar()
+	}
+}
+
+
+class Miedoso{
 	method atacar(persona){}
 	}
 	
